@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>LED Control By Golfpy</title>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <style>
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+            margin-top: 50px;
+            background-color: #f4f4f9;
+        }
+        
+        button {
+            padding: 15px 30px;
+            font-size: 18px;
+            cursor: pointer;
+            border: none;
+            border-radius: 10px;
+            color: white;
+            margin: 10px;
+            transition: 0.3s;
+        }
+        
+        .btn-on {
+            background-color: #2ecc71;
+        }
+        
+        .btn-off {
+            background-color: #e74c3c;
+        }
+        
+        button:hover {
+            opacity: 0.8;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+
+<body>
+    <h1>LED Global Remote Control</h1>
+    <p>สถานะปัจจุบันใน Database: <span id="current-status">กำลังโหลด...</span></p>
+
+    <button class="btn-on" onclick="sendControl(1)">เปิดไฟ (ON)</button>
+    <button class="btn-off" onclick="sendControl(0)">ปิดไฟ (OFF)</button>
+
+    <script>
+        // *** เอาค่า API Key ที่ได้จากข้อ 1 มาใส่ที่นี่ ***
+        const firebaseConfig = {
+            apiKey: "AIzaSyANjVA12XimaoTjNqmx_0I1zR-WHzd3150",
+            databaseURL: "https://led-by-golfpy-default-rtdb.asia-southeast1.firebasedatabase.app/",
+            projectId: "led-by-golfpy"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // ฟังก์ชันส่งค่า
+        function sendControl(val) {
+            database.ref('LED').set({
+                status: val
+            });
+        }
+
+        // ดึงค่ามาโชว์แบบ Real-time
+        database.ref('LED/status').on('value', (snapshot) => {
+            const val = snapshot.val();
+            document.getElementById('current-status').innerText = (val == 1) ? "เปิดอยู่" : "ปิดอยู่";
+        });
+    </script>
+</body>
+
+</html>
