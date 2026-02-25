@@ -1,76 +1,508 @@
 <!DOCTYPE html>
-<html>
+<html lang="th">
 
 <head>
     <meta charset="UTF-8">
-    <title>LED Control By Golfpy</title>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iot Smart Farm Bu.Golf</title>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
     <style>
+         :root {
+            --bg-color: #f4f7fa;
+            --primary: #10b981;
+            --primary-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            --fert-gradient: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            /* สีปุ่มปุ๋ย (ฟ้า) */
+            --dark-bg: #1e293b;
+            --text-main: #334155;
+            --text-muted: #64748b;
+            --card-bg: #ffffff;
+            --shadow-soft: 0 10px 25px rgba(0, 0, 0, 0.05);
+            --shadow-glow: 0 8px 20px rgba(16, 185, 129, 0.3);
+            --shadow-glow-fert: 0 8px 20px rgba(59, 130, 246, 0.3);
+        }
+        
         body {
-            text-align: center;
-            font-family: Arial, sans-serif;
-            margin-top: 50px;
-            background-color: #f4f4f9;
+            font-family: 'Prompt', sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            color: var(--text-main);
         }
         
-        button {
-            padding: 15px 30px;
-            font-size: 18px;
-            cursor: pointer;
-            border: none;
-            border-radius: 10px;
+        .app-container {
+            width: 100%;
+            max-width: 420px;
+            background: var(--bg-color);
+            border-radius: 35px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            border: 8px solid #ffffff;
+            position: relative;
+        }
+        
+        .header {
+            background: var(--primary-gradient);
             color: white;
-            margin: 10px;
-            transition: 0.3s;
+            text-align: center;
+            padding: 30px 20px 20px;
+            border-radius: 0 0 25px 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
         
-        .btn-on {
-            background-color: #2ecc71;
+        .header h1 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
         }
         
-        .btn-off {
-            background-color: #e74c3c;
-        }
-        
-        button:hover {
+        .header p {
+            margin: 5px 0 0;
+            font-size: 13px;
             opacity: 0.8;
-            transform: scale(1.05);
+            font-weight: 300;
+        }
+        
+        .status-banner {
+            background-color: #fef3c7;
+            color: #d97706;
+            margin: -15px 20px 15px;
+            padding: 12px 20px;
+            border-radius: 15px;
+            font-size: 13px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: var(--shadow-soft);
+            position: relative;
+            z-index: 10;
+            transition: all 0.3s ease;
+        }
+        
+        .status-banner.offline {
+            background-color: #fee2e2;
+            color: #dc2626;
+        }
+        
+        .status-banner.online {
+            background-color: #d1fae5;
+            color: #059669;
+        }
+        
+        .status-banner i {
+            font-size: 16px;
+        }
+        
+        .content {
+            padding: 0 20px 20px;
+        }
+        
+        .sensor-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 18px 15px;
+            text-align: center;
+            box-shadow: var(--shadow-soft);
+            transition: transform 0.2s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-3px);
+        }
+        
+        .icon-wrapper {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            font-size: 20px;
+        }
+        
+        .ic-moist {
+            background: #dcfce7;
+            color: #15803d;
+        }
+        
+        .ic-board {
+            background: #e0f2fe;
+            color: #0369a1;
+        }
+        
+        .ic-water {
+            background: #e0e7ff;
+            color: #4338ca;
+        }
+        
+        .ic-temp {
+            background: #ffedd5;
+            color: #c2410c;
+        }
+        
+        .card .title {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+            font-weight: 400;
+        }
+        
+        .card .value {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--dark-bg);
+        }
+        
+        .mode-container {
+            background: #e2e8f0;
+            border-radius: 16px;
+            padding: 4px;
+            display: flex;
+            margin-bottom: 25px;
+            position: relative;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        
+        .mode-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            background: transparent;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 12px;
+            z-index: 2;
+            font-family: 'Prompt', sans-serif;
+        }
+        
+        .mode-btn.active {
+            color: var(--primary);
+            background: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .control-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        /* สไตล์ปุ่มกด */
+        
+        .btn-zone {
+            background: var(--card-bg);
+            border: 2px solid #f1f5f9;
+            border-radius: 20px;
+            padding: 18px 10px;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            box-shadow: var(--shadow-soft);
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Prompt', sans-serif;
+        }
+        
+        .btn-zone i {
+            font-size: 24px;
+            color: #cbd5e1;
+            transition: all 0.3s;
+        }
+        
+        .btn-zone:active {
+            transform: scale(0.95);
+        }
+        /* ปุ่มน้ำ (สีเขียว) */
+        
+        .btn-zone.active-water {
+            background: var(--primary-gradient);
+            border-color: transparent;
+            color: white;
+            box-shadow: var(--shadow-glow);
+        }
+        
+        .btn-zone.active-water i {
+            color: white;
+        }
+        /* ปุ่มปุ๋ย (สีฟ้า) */
+        
+        .btn-zone.active-fert {
+            background: var(--fert-gradient);
+            border-color: transparent;
+            color: white;
+            box-shadow: var(--shadow-glow-fert);
+        }
+        
+        .btn-zone.active-fert i {
+            color: white;
+        }
+        
+        .btn-pump {
+            width: 100%;
+            background: var(--dark-bg);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 18px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: default;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(30, 41, 59, 0.3);
+            font-family: 'Prompt', sans-serif;
+            margin-top: 25px;
+        }
+        
+        .btn-pump.active {
+            background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+            box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+            }
         }
     </style>
 </head>
 
 <body>
-    <h1>LED Global Remote Control</h1>
-    <p>สถานะปัจจุบันใน Database: <span id="current-status">กำลังโหลด...</span></p>
 
-    <button class="btn-on" onclick="sendControl(1)">เปิดไฟ (ON)</button>
-    <button class="btn-off" onclick="sendControl(0)">ปิดไฟ (OFF)</button>
+    <div class="app-container">
+        <div class="header">
+            <h1>Smart Farm Pro</h1>
+            <p>ระบบควบคุมสวนอัจฉริยะ</p>
+        </div>
+
+        <div id="connectionBanner" class="status-banner online">
+            <i class="fa-solid fa-circle-check"></i> <span id="connText">ระบบทำงานปกติ: เชื่อมต่อ WiFi แล้ว</span>
+        </div>
+
+        <div class="content">
+            <div class="sensor-grid">
+                <div class="card">
+                    <div class="icon-wrapper ic-moist"><i class="fa-solid fa-leaf"></i></div>
+                    <div class="title">ความชื้นดินเฉลี่ย</div>
+                    <div class="value" id="valMoist">-- %</div>
+                </div>
+                <div class="card">
+                    <div class="icon-wrapper ic-board" id="iconBoardBg"><i class="fa-solid fa-microchip" id="iconBoard"></i></div>
+                    <div class="title">สถานะตู้คอนโทรล</div>
+                    <div class="value" id="valBoard">รอข้อมูล...</div>
+                </div>
+                <div class="card">
+                    <div class="icon-wrapper ic-water"><i class="fa-solid fa-droplet"></i></div>
+                    <div class="title">ปริมาณน้ำวันนี้</div>
+                    <div class="value"><span id="valWater">0</span> L</div>
+                </div>
+                <div class="card">
+                    <div class="icon-wrapper ic-temp"><i class="fa-solid fa-temperature-half"></i></div>
+                    <div class="title">อุณหภูมิ / ความชื้น</div>
+                    <div class="value" id="valTemp" style="font-size: 16px;">-- °C / -- %</div>
+                </div>
+            </div>
+
+            <div class="mode-container">
+                <button id="btnAuto" class="mode-btn active" onclick="setMode('AUTO')">โหมด AUTO</button>
+                <button id="btnManual" class="mode-btn" onclick="setMode('MANUAL')">โหมด MANUAL</button>
+            </div>
+
+            <div class="section-title" style="margin-top: 0;"><i class="fa-solid fa-water" style="color:#10b981;"></i> ระบบรดน้ำ (Watering Zones)</div>
+            <div class="control-grid">
+                <button id="btnZ1" class="btn-zone" onclick="toggleRelay('Zone1')">
+                <i class="fa-solid fa-faucet-drip"></i> รดน้ำโซน 1
+            </button>
+                <button id="btnZ2" class="btn-zone" onclick="toggleRelay('Zone2')">
+                <i class="fa-solid fa-faucet-drip"></i> รดน้ำโซน 2
+            </button>
+                <button id="btnZ3" class="btn-zone" onclick="toggleRelay('Zone3')">
+                <i class="fa-solid fa-faucet-drip"></i> รดน้ำโซน 3
+            </button>
+            </div>
+
+            <div class="section-title"><i class="fa-solid fa-flask" style="color:#3b82f6;"></i> ระบบจ่ายปุ๋ย (Fertilizer)</div>
+            <div class="control-grid">
+                <button id="btnFA" class="btn-zone" onclick="toggleFert('FertA')">
+                <i class="fa-solid fa-vial"></i> จ่ายปุ๋ย A
+            </button>
+                <button id="btnFB" class="btn-zone" onclick="toggleFert('FertB')">
+                <i class="fa-solid fa-vial"></i> จ่ายปุ๋ย B
+            </button>
+            </div>
+
+            <button id="btnPump" class="btn-pump">
+            <i class="fa-solid fa-power-off"></i> MAIN PUMP : OFF
+        </button>
+        </div>
+    </div>
 
     <script>
-        // *** เอาค่า API Key ที่ได้จากข้อ 1 มาใส่ที่นี่ ***
         const firebaseConfig = {
             apiKey: "AIzaSyANjVA12XimaoTjNqmx_0I1zR-WHzd3150",
-            databaseURL: "https://led-by-golfpy-default-rtdb.asia-southeast1.firebasedatabase.app/",
-            projectId: "led-by-golfpy"
+            databaseURL: "https://led-by-golfpy-default-rtdb.asia-southeast1.firebasedatabase.app"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        let sysState = {
+            Mode: "OFF",
+            Z1: false,
+            Z2: false,
+            Z3: false,
+            FA: false,
+            FB: false
         };
 
-        firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
+        db.ref('/').on('value', (snapshot) => {
+            const data = snapshot.val();
+            if (!data) return;
 
-        // ฟังก์ชันส่งค่า
-        function sendControl(val) {
-            database.ref('LED').set({
-                status: val
-            });
+            const banner = document.getElementById('connectionBanner');
+            if (data.Status && data.Status.Water === "LOW") {
+                banner.className = "status-banner offline";
+                banner.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> แจ้งเตือน: น้ำในแท็งก์หมด ระบบถูกระงับ!';
+            } else {
+                banner.className = "status-banner online";
+                banner.innerHTML = '<i class="fa-solid fa-circle-check"></i> ระบบทำงานปกติ: ปริมาณน้ำพร้อมใช้งาน';
+            }
+
+            const boardEl = document.getElementById('valBoard');
+            const iconBoardBg = document.getElementById('iconBoardBg');
+            if (data.Status && data.Status.Board === "ONLINE") {
+                boardEl.innerText = "ออนไลน์";
+                boardEl.style.color = "#059669";
+            } else {
+                boardEl.innerText = "ออฟไลน์";
+                boardEl.style.color = "#dc2626";
+                iconBoardBg.style.background = "#fee2e2";
+                iconBoardBg.style.color = "#dc2626";
+            }
+
+            if (data.Status && data.Status.Flow_ml) {
+                document.getElementById('valWater').innerText = (data.Status.Flow_ml / 1000).toFixed(1);
+            }
+            if (data.Sensor) {
+                if (data.Sensor.Moisture) document.getElementById('valMoist').innerText = Number(data.Sensor.Moisture).toFixed(1) + " %";
+                if (data.Sensor.Temp && data.Sensor.Humid) {
+                    document.getElementById('valTemp').innerText = Number(data.Sensor.Temp).toFixed(1) + "°C / " + Number(data.Sensor.Humid).toFixed(1) + "%";
+                }
+            }
+
+            if (data.Mode) {
+                sysState.Mode = data.Mode;
+                document.getElementById('btnAuto').className = (data.Mode === "AUTO") ? "mode-btn active" : "mode-btn";
+                document.getElementById('btnManual').className = (data.Mode === "MANUAL") ? "mode-btn active" : "mode-btn";
+            }
+
+            if (data.Control) {
+                sysState.Z1 = data.Control.Zone1 || false;
+                sysState.Z2 = data.Control.Zone2 || false;
+                sysState.Z3 = data.Control.Zone3 || false;
+                sysState.FA = data.Control.FertA || false;
+                sysState.FB = data.Control.FertB || false;
+
+                // อัปเดตปุ่มน้ำ (สีเขียว)
+                updateBtnClass('btnZ1', sysState.Z1, 'active-water');
+                updateBtnClass('btnZ2', sysState.Z2, 'active-water');
+                updateBtnClass('btnZ3', sysState.Z3, 'active-water');
+
+                // อัปเดตปุ่มปุ๋ย (สีฟ้า)
+                updateBtnClass('btnFA', sysState.FA, 'active-fert');
+                updateBtnClass('btnFB', sysState.FB, 'active-fert');
+
+                const isPumpOn = sysState.Z1 || sysState.Z2 || sysState.Z3;
+                const pumpBtn = document.getElementById('btnPump');
+                if (isPumpOn) {
+                    pumpBtn.className = "btn-pump active";
+                    pumpBtn.innerHTML = '<i class="fa-solid fa-power-off"></i> MAIN PUMP : ON (กำลังทำงาน)';
+                } else {
+                    pumpBtn.className = "btn-pump";
+                    pumpBtn.innerHTML = '<i class="fa-solid fa-power-off"></i> MAIN PUMP : OFF';
+                }
+            }
+        });
+
+        function setMode(newMode) {
+            db.ref('/Mode').set(newMode);
         }
 
-        // ดึงค่ามาโชว์แบบ Real-time
-        database.ref('LED/status').on('value', (snapshot) => {
-            const val = snapshot.val();
-            document.getElementById('current-status').innerText = (val == 1) ? "เปิดอยู่" : "ปิดอยู่";
-        });
+        function toggleRelay(zone) {
+            if (sysState.Mode !== "AUTO") {
+                alert("⚠️ กรุณาเปลี่ยนเป็น 'โหมด AUTO' ก่อนสั่งงานผ่านแอปพลิเคชันครับ");
+                return;
+            }
+            const zoneKey = zone.replace("Zone", "Z");
+            let current = sysState[zoneKey];
+            db.ref('/Control/' + zone).set(!current);
+        }
+
+        // ฟังก์ชันสั่งงานปุ๋ยแบบแยก A และ B
+        function toggleFert(fertName) {
+            if (sysState.Mode !== "AUTO") {
+                alert("⚠️ กรุณาเปลี่ยนเป็น 'โหมด AUTO' ก่อนสั่งงานผ่านแอปพลิเคชันครับ");
+                return;
+            }
+            const fertKey = fertName.replace("Fert", "F"); // แปลง FertA เป็น FA
+            let current = sysState[fertKey];
+            db.ref('/Control/' + fertName).set(!current);
+        }
+
+        // ฟังก์ชันย่อยสำหรับสลับ Class สีปุ่ม
+        function updateBtnClass(id, isActive, activeClass) {
+            const btn = document.getElementById(id);
+            if (isActive) {
+                btn.classList.add(activeClass);
+            } else {
+                btn.classList.remove(activeClass);
+            }
+        }
     </script>
+
 </body>
 
 </html>
