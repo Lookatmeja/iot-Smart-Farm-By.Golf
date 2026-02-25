@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>iot Smart Farm By.Golf</title>
+    <title>Smart Farm By.Golf</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -308,6 +308,43 @@
                 box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
             }
         }
+        /* สไตล์ปุ่มปลอดภัย / ฉุกเฉิน */
+        
+        .btn-zone.safe-emg {
+            background: #f8fafc;
+            color: #10b981;
+            border: 2px solid #e2e8f0;
+            cursor: default;
+        }
+        
+        .btn-zone.safe-emg i {
+            color: #10b981;
+        }
+        
+        .btn-zone.active-emg {
+            background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+            border-color: transparent;
+            color: white;
+            cursor: default;
+            box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
+            animation: pulse-emg 1.5s infinite;
+        }
+        
+        .btn-zone.active-emg i {
+            color: white;
+        }
+        
+        @keyframes pulse-emg {
+            0% {
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+            }
+        }
     </style>
 </head>
 
@@ -363,6 +400,10 @@
                 <button id="btnZ3" class="btn-zone" onclick="toggleRelay('Zone3')">
                 <i class="fa-solid fa-faucet-drip"></i> รดน้ำโซน 3
             </button>
+
+                <button id="btnEmgStatus" class="btn-zone safe-emg">
+                <i class="fa-solid fa-shield-check" id="iconEmg"></i> <span id="textEmg">ระบบปลอดภัย</span>
+            </button>
             </div>
 
             <div class="section-title"><i class="fa-solid fa-flask" style="color:#3b82f6;"></i> ระบบจ่ายปุ๋ย (Fertilizer)</div>
@@ -374,6 +415,8 @@
                 <i class="fa-solid fa-vial"></i> จ่ายปุ๋ย B
             </button>
             </div>
+
+
 
             <button id="btnPump" class="btn-pump">
             <i class="fa-solid fa-power-off"></i> MAIN PUMP : OFF
@@ -506,4 +549,3 @@
 </body>
 
 </html>
-
