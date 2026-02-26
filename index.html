@@ -412,7 +412,7 @@
                 }
                 // ดึงค่าน้ำและแปลงเป็นลิตร (L)
                 if (data.Sensor.WaterFlow_ml !== undefined) {
-                    document.getElementById('valWater').innerText = (data.Sensor.WaterFlow_ml / 1000).toFixed(1);
+                    document.getElementById('valWater').innerText = Number(data.Sensor.WaterFlow_ml).toFixed(0) + " ml";
                 }
             }
 
@@ -502,3 +502,4 @@
 
 </body>
 </html>
+
