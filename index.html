@@ -470,8 +470,12 @@
                 document.getElementById('valWater').innerText = (data.Status.Flow_ml / 1000).toFixed(1);
             }
             if (data.Sensor) {
-                if (data.Sensor.Moisture) document.getElementById('valMoist').innerText = Number(data.Sensor.Moisture).toFixed(1) + " %";
-                if (data.Sensor.Temp && data.Sensor.Humid) {
+                // เช็คว่ามีข้อมูลส่งมาจริงๆ (แม้จะเป็น 0 ก็จะผ่านเงื่อนไขนี้)
+                if (data.Sensor.Moisture !== undefined && data.Sensor.Moisture !== null) {
+                    document.getElementById('valMoist').innerText = Number(data.Sensor.Moisture).toFixed(1) + " %";
+                }
+
+                if (data.Sensor.Temp !== undefined && data.Sensor.Humid !== undefined) {
                     document.getElementById('valTemp').innerText = Number(data.Sensor.Temp).toFixed(1) + "°C / " + Number(data.Sensor.Humid).toFixed(1) + "%";
                 }
             }
@@ -544,6 +548,19 @@
                 btn.classList.remove(activeClass);
             }
         }
+
+        // 👇 เอาฟังก์ชันเช็คสถานะออนไลน์/ออฟไลน์ มาวางล่างสุด ตรงนี้ครับ 👇
+        setInterval(() => {
+            let currentTime = new Date().getTime();
+
+            // ถ้าเวลาปัจจุบัน ห่างจากเวลาล่าสุดที่บอร์ดส่งมา เกิน 15 วินาที (15000 ms)
+            if (window.lastAliveTime && (currentTime - window.lastAliveTime > 15000)) {
+                // **จุดสังเกต:** อย่าลืมแก้คำว่า 'boardStatus' ให้ตรงกับ id 
+                // ของข้อความสถานะในหน้าเว็บของช่างด้วยนะครับ
+                document.getElementById('boardStatus').innerText = "OFFLINE";
+                document.getElementById('boardStatus').style.color = "red";
+            }
+        }, 5000);
     </script>
 
 </body>
