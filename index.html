@@ -131,10 +131,25 @@
             font-size: 20px;
         }
         
-        .ic-moist { background: #dcfce7; color: #15803d; }
-        .ic-board { background: #e0f2fe; color: #0369a1; }
-        .ic-water { background: #e0e7ff; color: #4338ca; }
-        .ic-temp { background: #ffedd5; color: #c2410c; }
+        .ic-moist {
+            background: #dcfce7;
+            color: #15803d;
+        }
+        
+        .ic-board {
+            background: #e0f2fe;
+            color: #0369a1;
+        }
+        
+        .ic-water {
+            background: #e0e7ff;
+            color: #4338ca;
+        }
+        
+        .ic-temp {
+            background: #ffedd5;
+            color: #c2410c;
+        }
         
         .card .title {
             font-size: 12px;
@@ -214,14 +229,37 @@
             font-family: 'Prompt', sans-serif;
         }
         
-        .btn-zone i { font-size: 24px; color: #cbd5e1; transition: all 0.3s; }
-        .btn-zone:active { transform: scale(0.95); }
+        .btn-zone i {
+            font-size: 24px;
+            color: #cbd5e1;
+            transition: all 0.3s;
+        }
         
-        .btn-zone.active-water { background: var(--primary-gradient); border-color: transparent; color: white; box-shadow: var(--shadow-glow); }
-        .btn-zone.active-water i { color: white; }
+        .btn-zone:active {
+            transform: scale(0.95);
+        }
         
-        .btn-zone.active-fert { background: var(--fert-gradient); border-color: transparent; color: white; box-shadow: var(--shadow-glow-fert); }
-        .btn-zone.active-fert i { color: white; }
+        .btn-zone.active-water {
+            background: var(--primary-gradient);
+            border-color: transparent;
+            color: white;
+            box-shadow: var(--shadow-glow);
+        }
+        
+        .btn-zone.active-water i {
+            color: white;
+        }
+        
+        .btn-zone.active-fert {
+            background: var(--fert-gradient);
+            border-color: transparent;
+            color: white;
+            box-shadow: var(--shadow-glow-fert);
+        }
+        
+        .btn-zone.active-fert i {
+            color: white;
+        }
         
         .btn-pump {
             width: 100%;
@@ -250,28 +288,51 @@
         }
         
         @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
-            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+            0% {
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+            }
         }
         
         .btn-zone.safe-emg {
-            background: #f8fafc; color: #10b981; border: 2px solid #e2e8f0; cursor: default;
+            background: #f8fafc;
+            color: #10b981;
+            border: 2px solid #e2e8f0;
+            cursor: default;
         }
-        .btn-zone.safe-emg i { color: #10b981; }
+        
+        .btn-zone.safe-emg i {
+            color: #10b981;
+        }
         
         .btn-zone.active-emg {
             background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
-            border-color: transparent; color: white; cursor: default;
+            border-color: transparent;
+            color: white;
+            cursor: default;
             box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
             animation: pulse-emg 1.5s infinite;
         }
-        .btn-zone.active-emg i { color: white; }
+        
+        .btn-zone.active-emg i {
+            color: white;
+        }
         
         @keyframes pulse-emg {
-            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
-            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+            0% {
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+            }
         }
     </style>
 </head>
@@ -358,7 +419,14 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        let sysState = { Mode: "OFF", Z1: false, Z2: false, Z3: false, FA: false, FB: false };
+        let sysState = {
+            Mode: "OFF",
+            Z1: false,
+            Z2: false,
+            Z3: false,
+            FA: false,
+            FB: false
+        };
 
         db.ref('/').on('value', (snapshot) => {
             const data = snapshot.val();
@@ -378,7 +446,7 @@
             // --- 2. รับสัญญาณชีพจร (Heartbeat) ---
             const boardEl = document.getElementById('valBoard');
             const iconBoardBg = document.getElementById('iconBoardBg');
-            
+
             if (data.Status && data.Status.LastAlive) {
                 window.lastAliveTime = data.Status.LastAlive; // เก็บเวลาล่าสุดไว้เช็ค
                 boardEl.innerText = "ออนไลน์";
@@ -391,7 +459,7 @@
             const emgBtn = document.getElementById('btnEmgStatus');
             const iconEmg = document.getElementById('iconEmg');
             const textEmg = document.getElementById('textEmg');
-            
+
             if (data.Status && data.Status.EMG === "DANGER") {
                 emgBtn.className = "btn-zone active-emg";
                 iconEmg.className = "fa-solid fa-triangle-exclamation";
@@ -449,19 +517,23 @@
         });
 
         // ฟังก์ชันสั่งงานระบบ
-        function setMode(newMode) { db.ref('/Mode').set(newMode); }
+        function setMode(newMode) {
+            db.ref('/Mode').set(newMode);
+        }
 
         function toggleRelay(zone) {
-            if (sysState.Mode !== "AUTO") {
-                alert("⚠️ กรุณาเปลี่ยนเป็น 'โหมด AUTO' ก่อนสั่งงานผ่านแอปพลิเคชันครับ");
+            // แก้ไข: ให้ทำงานได้เฉพาะตอนที่ตู้เป็นโหมด MANUAL
+            if (sysState.Mode !== "MANUAL") {
+                alert("⚠️ กรุณาบิดสวิตช์หน้าตู้เป็น 'โหมด MANUAL' เพื่อใช้มือถือเป็นรีโมทสั่งงานครับ");
                 return;
             }
             db.ref('/Control/' + zone).set(!sysState[zone.replace("Zone", "Z")]);
         }
 
         function toggleFert(fertName) {
-            if (sysState.Mode !== "AUTO") {
-                alert("⚠️ กรุณาเปลี่ยนเป็น 'โหมด AUTO' ก่อนสั่งงานผ่านแอปพลิเคชันครับ");
+            // แก้ไข: ให้ทำงานได้เฉพาะตอนที่ตู้เป็นโหมด MANUAL
+            if (sysState.Mode !== "MANUAL") {
+                alert("⚠️ กรุณาบิดสวิตช์หน้าตู้เป็น 'โหมด MANUAL' เพื่อใช้มือถือเป็นรีโมทสั่งงานครับ");
                 return;
             }
             db.ref('/Control/' + fertName).set(!sysState[fertName.replace("Fert", "F")]);
@@ -479,7 +551,7 @@
 
             // ถ้าไม่มีสัญญาณตอบกลับจาก ESP32 เกิน 15 วินาที ให้ทำลายค่าหน้าจอให้หมด
             if (window.lastAliveTime && (currentTime - window.lastAliveTime > 15000)) {
-                
+
                 // 1. เปลี่ยนสถานะบอร์ดเป็นออฟไลน์สีแดง
                 document.getElementById('valBoard').innerText = "ออฟไลน์";
                 document.getElementById('valBoard').style.color = "#dc2626";
@@ -501,5 +573,5 @@
     </script>
 
 </body>
-</html>
 
+</html>
