@@ -16,6 +16,7 @@
             --primary: #10b981;
             --primary-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
             --fert-gradient: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            --timer-gradient: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
             --dark-bg: #1e293b;
             --text-main: #334155;
             --text-muted: #64748b;
@@ -23,6 +24,7 @@
             --shadow-soft: 0 10px 25px rgba(0, 0, 0, 0.05);
             --shadow-glow: 0 8px 20px rgba(16, 185, 129, 0.3);
             --shadow-glow-fert: 0 8px 20px rgba(59, 130, 246, 0.3);
+            --shadow-glow-timer: 0 8px 20px rgba(245, 158, 11, 0.3);
         }
         
         body {
@@ -96,10 +98,6 @@
             color: #059669;
         }
         
-        .status-banner i {
-            font-size: 16px;
-        }
-        
         .content {
             padding: 0 20px 20px;
         }
@@ -117,7 +115,6 @@
             padding: 18px 15px;
             text-align: center;
             box-shadow: var(--shadow-soft);
-            transition: transform 0.2s ease;
         }
         
         .icon-wrapper {
@@ -131,45 +128,20 @@
             font-size: 20px;
         }
         
-        .ic-moist {
-            background: #dcfce7;
-            color: #15803d;
-        }
+        .ic-moist { background: #dcfce7; color: #15803d; }
+        .ic-board { background: #e0f2fe; color: #0369a1; }
+        .ic-water { background: #e0e7ff; color: #4338ca; }
+        .ic-temp { background: #ffedd5; color: #c2410c; }
         
-        .ic-board {
-            background: #e0f2fe;
-            color: #0369a1;
-        }
-        
-        .ic-water {
-            background: #e0e7ff;
-            color: #4338ca;
-        }
-        
-        .ic-temp {
-            background: #ffedd5;
-            color: #c2410c;
-        }
-        
-        .card .title {
-            font-size: 12px;
-            color: var(--text-muted);
-            margin-bottom: 5px;
-            font-weight: 400;
-        }
-        
-        .card .value {
-            font-size: 18px;
-            font-weight: 600;
-            color: var(--dark-bg);
-        }
+        .card .title { font-size: 12px; color: var(--text-muted); margin-bottom: 5px; font-weight: 400; }
+        .card .value { font-size: 18px; font-weight: 600; color: var(--dark-bg); }
         
         .mode-container {
             background: #e2e8f0;
             border-radius: 16px;
             padding: 4px;
             display: flex;
-            margin-bottom: 25px;
+            margin-bottom: 15px;
             box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
         }
         
@@ -204,6 +176,56 @@
             gap: 8px;
         }
         
+        /* สไตล์สำหรับกล่องตั้งเวลา */
+        .timer-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 18px 15px;
+            box-shadow: var(--shadow-soft);
+            margin-bottom: 25px;
+        }
+
+        .timer-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .timer-row label {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-main);
+        }
+
+        .timer-input {
+            padding: 8px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            font-family: 'Prompt', sans-serif;
+            font-size: 14px;
+            color: var(--dark-bg);
+            outline: none;
+            background: #f8fafc;
+        }
+        
+        .btn-save-timer {
+            width: 100%;
+            padding: 12px;
+            background: var(--timer-gradient);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Prompt', sans-serif;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            box-shadow: var(--shadow-glow-timer);
+            transition: transform 0.2s;
+        }
+
+        .btn-save-timer:active { transform: scale(0.97); }
+
         .control-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -229,37 +251,14 @@
             font-family: 'Prompt', sans-serif;
         }
         
-        .btn-zone i {
-            font-size: 24px;
-            color: #cbd5e1;
-            transition: all 0.3s;
-        }
+        .btn-zone i { font-size: 24px; color: #cbd5e1; transition: all 0.3s; }
+        .btn-zone:active { transform: scale(0.95); }
         
-        .btn-zone:active {
-            transform: scale(0.95);
-        }
+        .btn-zone.active-water { background: var(--primary-gradient); border-color: transparent; color: white; box-shadow: var(--shadow-glow); }
+        .btn-zone.active-water i { color: white; }
         
-        .btn-zone.active-water {
-            background: var(--primary-gradient);
-            border-color: transparent;
-            color: white;
-            box-shadow: var(--shadow-glow);
-        }
-        
-        .btn-zone.active-water i {
-            color: white;
-        }
-        
-        .btn-zone.active-fert {
-            background: var(--fert-gradient);
-            border-color: transparent;
-            color: white;
-            box-shadow: var(--shadow-glow-fert);
-        }
-        
-        .btn-zone.active-fert i {
-            color: white;
-        }
+        .btn-zone.active-fert { background: var(--fert-gradient); border-color: transparent; color: white; box-shadow: var(--shadow-glow-fert); }
+        .btn-zone.active-fert i { color: white; }
         
         .btn-pump {
             width: 100%;
@@ -288,27 +287,13 @@
         }
         
         @keyframes pulse {
-            0% {
-                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
-            }
-            70% {
-                box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
-            }
-            100% {
-                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
-            }
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
         }
         
-        .btn-zone.safe-emg {
-            background: #f8fafc;
-            color: #10b981;
-            border: 2px solid #e2e8f0;
-            cursor: default;
-        }
-        
-        .btn-zone.safe-emg i {
-            color: #10b981;
-        }
+        .btn-zone.safe-emg { background: #f8fafc; color: #10b981; border: 2px solid #e2e8f0; cursor: default; }
+        .btn-zone.safe-emg i { color: #10b981; }
         
         .btn-zone.active-emg {
             background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
@@ -318,21 +303,12 @@
             box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
             animation: pulse-emg 1.5s infinite;
         }
-        
-        .btn-zone.active-emg i {
-            color: white;
-        }
+        .btn-zone.active-emg i { color: white; }
         
         @keyframes pulse-emg {
-            0% {
-                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
-            }
-            70% {
-                box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
-            }
-            100% {
-                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
-            }
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
         }
     </style>
 </head>
@@ -364,7 +340,7 @@
                 <div class="card">
                     <div class="icon-wrapper ic-water"><i class="fa-solid fa-droplet"></i></div>
                     <div class="title">ปริมาณน้ำวันนี้</div>
-                    <div class="value"><span id="valWater">--</span> L</div>
+                    <div class="value" id="valWater">-- ml</div>
                 </div>
                 <div class="card">
                     <div class="icon-wrapper ic-temp"><i class="fa-solid fa-temperature-half"></i></div>
@@ -374,11 +350,27 @@
             </div>
 
             <div class="mode-container">
-                <button id="btnAuto" class="mode-btn active" onclick="setMode('AUTO')">โหมด AUTO</button>
-                <button id="btnManual" class="mode-btn" onclick="setMode('MANUAL')">โหมด MANUAL</button>
+                <button id="btnAuto" class="mode-btn active" onclick="alert('กรุณาบิดสวิตช์ที่หน้าตู้คอนโทรลเพื่อเปลี่ยนโหมดครับ')">โหมด AUTO</button>
+                <button id="btnManual" class="mode-btn" onclick="alert('กรุณาบิดสวิตช์ที่หน้าตู้คอนโทรลเพื่อเปลี่ยนโหมดครับ')">โหมด MANUAL</button>
             </div>
 
-            <div class="section-title" style="margin-top: 0;"><i class="fa-solid fa-water" style="color:#10b981;"></i> ระบบรดน้ำ (Watering Zones)</div>
+            <div class="section-title" style="margin-top: 5px;"><i class="fa-solid fa-clock" style="color:#f59e0b;"></i> ตั้งเวลาเช็คความชื้น (Auto Mode)</div>
+            <div class="timer-card">
+                <div class="timer-row">
+                    <label>เวลาเช็ครอบที่ 1:</label>
+                    <input type="time" id="checkTime1" class="timer-input">
+                </div>
+                <div class="timer-row">
+                    <label>เวลาเช็ครอบที่ 2:</label>
+                    <input type="time" id="checkTime2" class="timer-input">
+                </div>
+                <button onclick="saveSchedule()" class="btn-save-timer">
+                    <i class="fa-solid fa-floppy-disk"></i> บันทึกเวลา
+                </button>
+                <div id="scheduleStatus" style="text-align: center; color: #10b981; font-size: 13px; font-weight: 500; margin-top: 10px; height: 16px;"></div>
+            </div>
+
+            <div class="section-title"><i class="fa-solid fa-water" style="color:#10b981;"></i> ระบบรดน้ำ (Watering Zones)</div>
             <div class="control-grid">
                 <button id="btnZ1" class="btn-zone" onclick="toggleRelay('Zone1')">
                     <i class="fa-solid fa-faucet-drip"></i> รดน้ำโซน 1
@@ -389,7 +381,6 @@
                 <button id="btnZ3" class="btn-zone" onclick="toggleRelay('Zone3')">
                     <i class="fa-solid fa-faucet-drip"></i> รดน้ำโซน 3
                 </button>
-
                 <button id="btnEmgStatus" class="btn-zone safe-emg">
                     <i class="fa-solid fa-shield-check" id="iconEmg"></i> <span id="textEmg">ระบบปลอดภัย</span>
                 </button>
@@ -421,18 +412,37 @@
 
         let sysState = {
             Mode: "OFF",
-            Z1: false,
-            Z2: false,
-            Z3: false,
-            FA: false,
-            FB: false
+            Z1: false, Z2: false, Z3: false,
+            FA: false, FB: false
         };
 
+        // --- ดึงเวลาเดิมจาก Firebase มาโชว์ในช่องกรอก ---
+        db.ref('/Config/CheckTime1').on('value', (snap) => {
+            if(snap.exists()) document.getElementById('checkTime1').value = snap.val();
+        });
+        db.ref('/Config/CheckTime2').on('value', (snap) => {
+            if(snap.exists()) document.getElementById('checkTime2').value = snap.val();
+        });
+
+        // --- ฟังก์ชันบันทึกเวลา ---
+        function saveSchedule() {
+            let t1 = document.getElementById('checkTime1').value;
+            let t2 = document.getElementById('checkTime2').value;
+            
+            // ถ้ากรอกเวลา ก็บันทึก ถ้าเว้นว่าง ก็ส่งค่าว่างไปเคลียร์
+            if(t1) db.ref('/Config/CheckTime1').set(t1); else db.ref('/Config/CheckTime1').set("");
+            if(t2) db.ref('/Config/CheckTime2').set(t2); else db.ref('/Config/CheckTime2').set("");
+            
+            document.getElementById('scheduleStatus').innerText = "✅ บันทึกเวลาเรียบร้อยแล้ว!";
+            setTimeout(() => document.getElementById('scheduleStatus').innerText = "", 3000);
+        }
+
+        // --- รับข้อมูล Real-time จาก Firebase ---
         db.ref('/').on('value', (snapshot) => {
             const data = snapshot.val();
             if (!data) return;
 
-            // --- 1. จัดการป้ายแบนเนอร์ด้านบน ---
+            // จัดการป้ายแบนเนอร์ด้านบน
             const banner = document.getElementById('connectionBanner');
             const connText = document.getElementById('connText');
             if (data.Status && data.Status.Water === "LOW") {
@@ -443,23 +453,21 @@
                 connText.innerHTML = 'ระบบทำงานปกติ: ปริมาณน้ำพร้อมใช้งาน';
             }
 
-            // --- 2. รับสัญญาณชีพจร (Heartbeat) ---
+            // รับสัญญาณชีพจร
             const boardEl = document.getElementById('valBoard');
             const iconBoardBg = document.getElementById('iconBoardBg');
-
             if (data.Status && data.Status.LastAlive) {
-                window.lastAliveTime = data.Status.LastAlive; // เก็บเวลาล่าสุดไว้เช็ค
+                window.lastAliveTime = data.Status.LastAlive;
                 boardEl.innerText = "ออนไลน์";
                 boardEl.style.color = "#059669";
                 iconBoardBg.style.background = "#e0f2fe";
                 iconBoardBg.style.color = "#0369a1";
             }
 
-            // --- 3. แจ้งเตือนฉุกเฉิน (EMG) ---
+            // แจ้งเตือนฉุกเฉิน (EMG)
             const emgBtn = document.getElementById('btnEmgStatus');
             const iconEmg = document.getElementById('iconEmg');
             const textEmg = document.getElementById('textEmg');
-
             if (data.Status && data.Status.EMG === "DANGER") {
                 emgBtn.className = "btn-zone active-emg";
                 iconEmg.className = "fa-solid fa-triangle-exclamation";
@@ -470,7 +478,7 @@
                 textEmg.innerText = "ระบบปลอดภัย";
             }
 
-            // --- 4. ดึงข้อมูลเซนเซอร์ ---
+            // ข้อมูลเซนเซอร์
             if (data.Sensor) {
                 if (data.Sensor.Moisture !== undefined && data.Sensor.Moisture !== null) {
                     document.getElementById('valMoist').innerText = Number(data.Sensor.Moisture).toFixed(1) + " %";
@@ -478,19 +486,19 @@
                 if (data.Sensor.Temp !== undefined && data.Sensor.Humid !== undefined) {
                     document.getElementById('valTemp').innerText = Number(data.Sensor.Temp).toFixed(1) + "°C / " + Number(data.Sensor.Humid).toFixed(1) + "%";
                 }
-                // ดึงค่าน้ำและแปลงเป็นลิตร (L)
                 if (data.Sensor.WaterFlow_ml !== undefined) {
                     document.getElementById('valWater').innerText = Number(data.Sensor.WaterFlow_ml).toFixed(0) + " ml";
                 }
             }
 
-            // --- 5. จัดการปุ่มต่างๆ ---
+            // จัดการปุ่มโหมด (เปลี่ยนจากการกดเว็บ เป็นให้บอร์ดคุม)
             if (data.Mode) {
                 sysState.Mode = data.Mode;
                 document.getElementById('btnAuto').className = (data.Mode === "AUTO") ? "mode-btn active" : "mode-btn";
                 document.getElementById('btnManual').className = (data.Mode === "MANUAL") ? "mode-btn active" : "mode-btn";
             }
 
+            // สถานะอุปกรณ์
             if (data.Control) {
                 sysState.Z1 = data.Control.Zone1 || false;
                 sysState.Z2 = data.Control.Zone2 || false;
@@ -516,13 +524,8 @@
             }
         });
 
-        // ฟังก์ชันสั่งงานระบบ
-        function setMode(newMode) {
-            db.ref('/Mode').set(newMode);
-        }
-
+        // --- ฟังก์ชันสั่งงานรีเลย์ (ต้องเป็นโหมด MANUAL เท่านั้นถึงจะกดได้) ---
         function toggleRelay(zone) {
-            // แก้ไข: ให้ทำงานได้เฉพาะตอนที่ตู้เป็นโหมด MANUAL
             if (sysState.Mode !== "MANUAL") {
                 alert("⚠️ กรุณาบิดสวิตช์หน้าตู้เป็น 'โหมด MANUAL' เพื่อใช้มือถือเป็นรีโมทสั่งงานครับ");
                 return;
@@ -531,7 +534,6 @@
         }
 
         function toggleFert(fertName) {
-            // แก้ไข: ให้ทำงานได้เฉพาะตอนที่ตู้เป็นโหมด MANUAL
             if (sysState.Mode !== "MANUAL") {
                 alert("⚠️ กรุณาบิดสวิตช์หน้าตู้เป็น 'โหมด MANUAL' เพื่อใช้มือถือเป็นรีโมทสั่งงานครับ");
                 return;
@@ -549,21 +551,16 @@
         setInterval(() => {
             let currentTime = new Date().getTime();
 
-            // ถ้าไม่มีสัญญาณตอบกลับจาก ESP32 เกิน 15 วินาที ให้ทำลายค่าหน้าจอให้หมด
             if (window.lastAliveTime && (currentTime - window.lastAliveTime > 15000)) {
-
-                // 1. เปลี่ยนสถานะบอร์ดเป็นออฟไลน์สีแดง
                 document.getElementById('valBoard').innerText = "ออฟไลน์";
                 document.getElementById('valBoard').style.color = "#dc2626";
                 document.getElementById('iconBoardBg').style.background = "#fee2e2";
                 document.getElementById('iconBoardBg').style.color = "#dc2626";
 
-                // 2. เคลียร์ค่าเซนเซอร์เป็นขีด (-)
                 document.getElementById('valMoist').innerText = "-- %";
                 document.getElementById('valTemp').innerText = "-- °C / -- %";
-                document.getElementById('valWater').innerText = "--";
+                document.getElementById('valWater').innerText = "-- ml";
 
-                // 3. ปรับแบนเนอร์ด้านบนให้เป็นแจ้งเตือน
                 const banner = document.getElementById('connectionBanner');
                 const connText = document.getElementById('connText');
                 banner.className = "status-banner offline";
